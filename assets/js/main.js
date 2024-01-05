@@ -1,117 +1,310 @@
-/*
-	Strata by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
-*/
+(function ($)
+    { "use strict"
+  
 
-(function($) {
+/* 1. Proloder */
+    $(window).on('load', function () {
+      $('#preloader-active').delay(450).fadeOut('slow');
+      $('body').delay(450).css({
+        'overflow': 'visible'
+      });
+    });
 
-	var $window = $(window),
-		$body = $('body'),
-		$header = $('#header'),
-		$footer = $('#footer'),
-		$main = $('#main'),
-		settings = {
+/* 2. sticky And Scroll UP */
+    $(window).on('scroll', function () {
+      var scroll = $(window).scrollTop();
+      if (scroll < 400) {
+        $(".header-sticky").removeClass("sticky-bar");
+        $('#back-top').fadeOut(500);
+      } else {
+        $(".header-sticky").addClass("sticky-bar");
+        $('#back-top').fadeIn(500);
+      }
+    });
 
-			// Parallax background effect?
-				parallax: true,
+  // Scroll Up
+    $('#back-top a').on("click", function () {
+      $('body,html').animate({
+        scrollTop: 0
+      }, 800);
+      return false;
+    });
+  
 
-			// Parallax factor (lower = more intense, higher = less intense).
-				parallaxFactor: 20
+/* 3. slick Nav */
+// mobile_menu
+    var menu = $('ul#navigation');
+    if(menu.length){
+      menu.slicknav({
+        prependTo: ".mobile_menu",
+        closedSymbol: '+',
+        openedSymbol:'-'
+      });
+    };
 
-		};
+/* 4. MainSlider-1 */
+    // h1-hero-active
+    function mainSlider() {
+      var BasicSlider = $('.slider-active');
+      BasicSlider.on('init', function (e, slick) {
+        var $firstAnimatingElements = $('.single-slider:first-child').find('[data-animation]');
+        doAnimations($firstAnimatingElements);
+      });
+      BasicSlider.on('beforeChange', function (e, slick, currentSlide, nextSlide) {
+        var $animatingElements = $('.single-slider[data-slick-index="' + nextSlide + '"]').find('[data-animation]');
+        doAnimations($animatingElements);
+      });
+      BasicSlider.slick({
+        autoplay: false,
+        autoplaySpeed: 4000,
+        dots: false,
+        fade: true,
+        arrows: false, 
+        prevArrow: '<button type="button" class="slick-prev"><i class="ti-angle-left"></i></button>',
+        nextArrow: '<button type="button" class="slick-next"><i class="ti-angle-right"></i></button>',
+        responsive: [{
+            breakpoint: 1024,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              infinite: true,
+            }
+          },
+          {
+            breakpoint: 991,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              arrows: false
+            }
+          },
+          {
+            breakpoint: 767,
+            settings: {
+              slidesToShow: 1,
+              slidesToScroll: 1,
+              arrows: false
+            }
+          }
+        ]
+      });
 
-	// Breakpoints.
-		breakpoints({
-			xlarge:  [ '1281px',  '1800px' ],
-			large:   [ '981px',   '1280px' ],
-			medium:  [ '737px',   '980px'  ],
-			small:   [ '481px',   '736px'  ],
-			xsmall:  [ null,      '480px'  ],
-		});
+      function doAnimations(elements) {
+        var animationEndEvents = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
+        elements.each(function () {
+          var $this = $(this);
+          var $animationDelay = $this.data('delay');
+          var $animationType = 'animated ' + $this.data('animation');
+          $this.css({
+            'animation-delay': $animationDelay,
+            '-webkit-animation-delay': $animationDelay
+          });
+          $this.addClass($animationType).one(animationEndEvents, function () {
+            $this.removeClass($animationType);
+          });
+        });
+      }
+    }
+    mainSlider();
 
-	// Play initial animations on page load.
-		$window.on('load', function() {
-			window.setTimeout(function() {
-				$body.removeClass('is-preload');
-			}, 100);
-		});
+    
+/* 5. Testimonial Active*/
+  var testimonial = $('.h1-testimonial-active');
+  if(testimonial.length){
+  testimonial.slick({
+      dots: false,
+      infinite: true,
+      speed: 1000,
+      autoplay:true,
+      loop:true,
+      arrows: true,
+      prevArrow: '<button type="button" class="slick-prev"><i class="ti-angle-left"></i></button>',
+      nextArrow: '<button type="button" class="slick-next"><i class="ti-angle-right"></i></button>',
+      slidesToShow: 1,
+      slidesToScroll: 1,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            infinite: true,
+            dots: false,
+            arrow:false
+          }
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            arrows:false
+          }
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            arrows:false,
+          }
+        }
+      ]
+    });
+  }
 
-	// Touch?
-		if (browser.mobile) {
 
-			// Turn on touch mode.
-				$body.addClass('is-touch');
 
-			// Height fix (mostly for iOS).
-				window.setTimeout(function() {
-					$window.scrollTop($window.scrollTop() + 1);
-				}, 0);
+/* 6. Nice Selectorp  */
+  var nice_Select = $('select');
+    if(nice_Select.length){
+      nice_Select.niceSelect();
+    }
 
-		}
+    
+//7. blog-activ
+    $('.blog-active').slick({
+      dots:false,
+      infinite: true,
+      speed: 300,
+      arrows: true,
+      slidesToShow: 2,
+      prevArrow:'<button type="button" class="slick-prev"><i class="ti-angle-left"></i></button>',
+      nextArrow:'<button type="button" class="slick-next"><i class="ti-angle-right"></i></button>',
+      slidesToScroll: 1,
+      responsive: [
+        {
+        breakpoint: 1200,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: false,
+        }
+        },
+        {
+        breakpoint: 992,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1
+        }
+        },
+        {
+        breakpoint: 700,
+        settings: {
+          arrows: false,
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+        },
+        {
+        breakpoint: 480,
+        settings: {
+          arrows: false,
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+        }
+      ]
+      });
 
-	// Footer.
-		breakpoints.on('<=medium', function() {
-			$footer.insertAfter($main);
-		});
 
-		breakpoints.on('>medium', function() {
-			$footer.appendTo($header);
-		});
+ //8. Brand Active
+    $('.brand-active').slick({
+      dots: false,
+      infinite: true,
+      autoplay: true,
+      speed: 400,
+      arrows: false,
+      slidesToShow: 6,
+      slidesToScroll: 1,
+      responsive: [
+        {
+          breakpoint: 1024,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 3,
+            infinite: true,
+            dots: false,
+          }
+        },
+        {
+          breakpoint: 992,
+          settings: {
+            slidesToShow: 4,
+            slidesToScroll: 3,
+            infinite: true,
+            dots: false,
+          }
+        },
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 3,
+            slidesToScroll: 1
+          }
+        },
+        {
+          breakpoint: 480,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1
+          }
+        },
 
-	// Header.
+        // You can unslick at a given breakpoint now by adding:
+        // settings: "unslick"
+        // instead of a settings object
+      ]
+    });
 
-		// Parallax background.
+/*9. data-background */
+    $("[data-background]").each(function () {
+      $(this).css("background-image", "url(" + $(this).attr("data-background") + ")")
+      });
 
-			// Disable parallax on IE (smooth scrolling is jerky), and on mobile platforms (= better performance).
-				if (browser.name == 'ie'
-				||	browser.mobile)
-					settings.parallax = false;
 
-			if (settings.parallax) {
+/* 10. WOW active */
+    new WOW().init();
 
-				breakpoints.on('<=medium', function() {
+// 11. ---- Mailchimp js --------//  
+    function mailChimp() {
+      $('#mc_embed_signup').find('form').ajaxChimp();
+    }
+    mailChimp();
 
-					$window.off('scroll.strata_parallax');
-					$header.css('background-position', '');
 
-				});
+// 12 Pop Up Img
+    var popUp = $('.single_gallery_part, .img-pop-up');
+      if(popUp.length){
+        popUp.magnificPopup({
+          type: 'image',
+          gallery:{
+            enabled:true
+          }
+        });
+      }
 
-				breakpoints.on('>medium', function() {
+// 12 Pop Up Video
+    var popUp = $('.popup-video');
+    if(popUp.length){
+      popUp.magnificPopup({
+        type: 'iframe'
+      });
+    }
 
-					$header.css('background-position', 'left 0px');
+/* 13. counterUp*/
+    $('.counter').counterUp({
+      delay: 10,
+      time: 3000
+    });
 
-					$window.on('scroll.strata_parallax', function() {
-						$header.css('background-position', 'left ' + (-1 * (parseInt($window.scrollTop()) / settings.parallaxFactor)) + 'px');
-					});
 
-				});
+//16. Overlay
+  $(".snake").snakeify({
+    speed: 200
+  });
 
-				$window.on('load', function() {
-					$window.triggerHandler('scroll');
-				});
 
-			}
-
-	// Main Sections: Two.
-
-		// Lightbox gallery.
-			$window.on('load', function() {
-
-				$('#two').poptrox({
-					caption: function($a) { return $a.next('h3').text(); },
-					overlayColor: '#2c2c2c',
-					overlayOpacity: 0.85,
-					popupCloserText: '',
-					popupLoaderText: '',
-					selector: '.work-item a.image',
-					usePopupCaption: true,
-					usePopupDefaultStyling: false,
-					usePopupEasyClose: false,
-					usePopupNav: true,
-					windowMargin: (breakpoints.active('<=small') ? 0 : 50)
-				});
-
-			});
 
 })(jQuery);
